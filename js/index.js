@@ -94,6 +94,8 @@ name_button.addEventListener("click", async () => {
     id_button.className = button_inactive;
     name_button.className = button_active;
 
+    pokedata.clear();
+    await fetchPokemons();
     displayPokemons();
 });
 
@@ -138,7 +140,7 @@ function getSearchEndpoint() {
 
 // string template for fetching pokemons by pages
 function getEndpoint() {
-    if (reverse_active) {
+    if (reverse_active && id_active) {
         return `https://pokeapi.co/api/v2/pokemon?limit=${no_pokemons}&offset=${
             max_page * no_pokemons - curr_page * no_pokemons
         }`;
@@ -221,20 +223,29 @@ function displaySearchResult() {
 // displays the pokemon for each page
 function displayPokemons() {
     const json = pokedata.get(curr_page);
-    console.log(json);
     const results = json.results;
     const cardContainer = document.getElementById("card-container");
     cardContainer.innerHTML = "";
 
-    if (name_active && !id_active) {
-        results.sort((a, b) => a.name > b.name);
+    if (name_active) {
+        results.sort((a, b) => {
+            if (a.name > b.name) {
+                return 1;
+            }
+
+            if (a.name < b.name) {
+                return -1;
+            }
+            
+            return 0;
+        });
     }
 
-    if (reverse_active && !id_active) {
+    if (reverse_active) {
         results.reverse();
     }
 
-    if (reverse_active2 && reverse_active === false && !id_active) {
+    if (reverse_active2 && reverse_active === false) {
         results.reverse();
         results.reverse();
         reverse_active2 = false;
