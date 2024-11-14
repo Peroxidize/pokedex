@@ -1,3 +1,44 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+:root {
+    /* font consistency */
+    --font: monospace;
+
+    /* text colors */
+    --text-white: white;
+    --text-black: black;
+    --text-gray: rgb(31 41 55);
+    --text-blue: rgb(29 78 216);
+
+    /* design colors */
+    --border-color: rgb(96 165 250);
+    --background-color: rgb(59 130 246);
+}
+
+* {
+    font-family: var(--font);
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+.text-white {
+    color: var(--text-white);
+}
+
+.text-black {
+    color: var(--text-black);
+}
+
+.text-gray {
+    color: var(--text-gray);
+}
+
+.text-blue {
+    color: var(--text-blue);
+}
+
+.border-color {
+    border-color: var(--border-color);
+}
+
+.background-color {
+    background-color: var(--background-color);
+}

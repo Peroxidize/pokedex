@@ -4,18 +4,19 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Pokedex</title>
+        <link rel="stylesheet" href="./css/index.css" />
         <!-- Tailwind CDN -->
         <script src="https://cdn.tailwindcss.com"></script>
     </head>
-    <body class="max-w-screen-lg m-auto p-8 font-mono">
+    <body class="font-mono">
         <!-- reusable template for pokemon cards -->
         <template id="pokemon-card">
             <div
-                class="border-blue-400 border-[1px] p-4 rounded-lg hover:cursor-pointer hover:scale-105 transition-all"
+                class="border-color border-[1px] p-4 rounded-lg hover:cursor-pointer hover:scale-105 transition-all"
             >
                 <div class="relative">
                     <span
-                        class="absolute top-0 left-0 px-2 py-1 text-sm text-white bg-blue-500 rounded-br-lg"
+                        class="absolute top-0 left-0 px-2 py-1 text-sm text-white background-color rounded-br-lg"
                     >
                         #001
                     </span>
@@ -28,16 +29,39 @@
                             className="w-full h-full object-contain"
                         />
                     </div>
-                    <h2 class="capitalize text-xl font-bold text-center text-gray-800">
+                    <h2 class="capitalize text-xl font-bold text-center text-gray">
                         Bulbasaur
                     </h2>
                 </div>
             </div>
         </template>
 
-        <header><h1 class="text-bold text-3xl text-center mt-4 mb-8">Pokedex</h1></header>
-        <main>
-            <nav class="flex flex-wrap justify-between gap-4 mb-8">
+        <header id="header">
+            <nav
+                class="flex justify-between flex-wrap w-full background-color py-4 px-6 shadow-md items-center text-white"
+            >
+                <h1 class="font-bold text-3xl">Pokedex</h1>
+                <ul class="flex space-x-4">
+                    <li>
+                        <a href="/"
+                            >🏠 <span class="text-lg hover:underline">Home</span></a
+                        >
+                    </li>
+                    <li>
+                        <a href="https://pokeapi.co/about" target="_blank"
+                            >ⓘ <span class="text-lg hover:underline">About</span></a
+                        >
+                    </li>
+                    <li>
+                        <a href="#footer"
+                            >↓ <span class="text-lg hover:underline">Footer</span></a
+                        >
+                    </li>
+                </ul>
+            </nav>
+        </header>
+        <main class="max-w-screen-lg m-auto p-8">
+            <div class="flex flex-wrap justify-between gap-4 mb-8">
                 <!-- Search bar for pokemon search -->
                 <div class="relative mt-2 rounded-md shadow-sm max-w-[256px]">
                     <div
@@ -52,7 +76,7 @@
                         placeholder="Charizard"
                     />
                 </div>
-                
+
                 <!-- Pokemon sorting buttons -->
                 <div class="flex gap-4 items-center">
                     <p>Sort by:</p>
@@ -64,43 +88,62 @@
                     </button>
                     <button
                         id="sort-name"
-                        class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                        class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-color hover:border-transparent rounded"
                     >
                         Name
                     </button>
                     <button
                         id="sort-reverse"
-                        class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                        class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-color hover:border-transparent rounded"
                     >
                         Reverse
                     </button>
                 </div>
-            </nav>
-            
+            </div>
+
             <!-- pokemon card container append child elements to this element -->
             <section
                 id="card-container"
                 class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
             ></section>
+
+            <!-- Change page section -->
+            <div class="flex justify-between items-center mt-8">
+                <button
+                    id="previous-button"
+                    class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-color hover:border-transparent rounded"
+                >
+                    Previous
+                </button>
+                <h3 id="page-info" class="text-lg"></h3>
+                <button
+                    id="next-button"
+                    class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-color hover:border-transparent rounded"
+                >
+                    Next
+                </button>
+            </div>
         </main>
 
-        <!-- Change page section -->
-        <footer class="flex justify-between items-center mt-8">
-            <button
-                id="previous-button"
-                class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-            >
-                Previous
-            </button>
-            <h3 id="page-info" class="text-lg"></h3>
-            <button
-                id="next-button"
-                class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-            >
-                Next
-            </button>
+        <footer id="footer" class="background-color text-white p-4 shadow-md">
+            <div class="container mx-auto flex flex-col justify-center items-center">
+                <h3 class="text-lg text-center">© 2024 Pokédex. All rights reserved.</h3>
+                <nav class="list-none">
+                    <li>
+                        <a
+                            href="https://github.com/peroxidize/pokedex"
+                            target="_blank"
+                            class="hover:underline"
+                            >View on Github</a
+                        >
+                    </li>
+                    <li>
+                        <a href="#header" class="hover:underline">Back to header</a>
+                    </li>
+                </nav>
+            </div>
         </footer>
-        
+
         <!-- this javascript file will be responsible for interactivity of the page -->
         <script src="./js/index.js"></script>
     </body>
