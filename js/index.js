@@ -7,7 +7,7 @@ const no_pokemons = 18;
 const button_inactive =
     "bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded";
 const button_active =
-    "bg-blue-500 font-semibold text-white py-2 px-4 border border-transparent rounded";
+    "bg-blue-500 font-semibold text-white py-2 px-4 border border-transparent rounded hover:cursor-pointer";
 let curr_page = 1;
 let max_page = 0;
 let count = -1;
@@ -198,8 +198,6 @@ async function searchPokemon() {
 // displays the search result
 function displaySearchResult() {
     const json = pokemon_info_data.get(search.value);
-    console.log(json);
-    console.log("123");
     const cardContainer = document.getElementById("card-container");
     cardContainer.innerHTML = "";
 
@@ -222,7 +220,7 @@ function displaySearchResult() {
 
 // displays the pokemon for each page
 function displayPokemons() {
-    const json = pokedata.get(curr_page);
+    const json = {...pokedata.get(curr_page)};
     const results = json.results;
     const cardContainer = document.getElementById("card-container");
     cardContainer.innerHTML = "";
