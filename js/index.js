@@ -31,6 +31,135 @@ const next_button = document.getElementById("next-button");
 // Timeout
 let timeoutID;
 
+// string template for search endpoint
+const getSearchEndpoint = () => {
+    return `https://pokeapi.co/api/v2/pokemon/${search.value}/`;
+};
+
+// string template for fetching pokemons by pages
+const getEndpoint = () => {
+    if (reverse_active && id_active) {
+        return `https://pokeapi.co/api/v2/pokemon?limit=${no_pokemons}&offset=${
+            max_page * no_pokemons - curr_page * no_pokemons
+        }`;
+    }
+
+    return `https://pokeapi.co/api/v2/pokemon?limit=${no_pokemons}&offset=${
+        curr_page * no_pokemons - no_pokemons
+    }`;
+};
+
+// string template for displaying the page info
+const getPageInfo = () => {
+    return `Page ${curr_page} of ${max_page}`;
+};
+
+// fetch pokemons by pages
+const fetchPokemons = async () => {
+    try {
+        if (pokedata.get(curr_page) !== undefined) {
+            return;
+        }
+
+        const response = await fetch(getEndpoint());
+        if (!response.ok) {
+            console.log("error fetching");
+            console.log(response.status);
+            return;
+        }
+
+        const json = await response.json();
+        max_page = Math.ceil(json.count / 18);
+        count = json.count;
+        pokedata.set(curr_page, json);
+    } catch (error) {
+        console.log(error.message);
+    }
+};
+
+// fetch pokemon from the search value, must be exact spelling in order to return result
+const searchPokemon = async () => {
+    try {
+        const response = await fetch(getSearchEndpoint());
+        if (!response.ok) {
+            console.log("error fetching");
+            console.log(response.status);
+        }
+
+        const json = await response.json();
+        pokemon_info_data.set(search.value, json);
+    } catch (error) {
+        console.log(error.message);
+    }
+};
+
+// displays the search result
+const displaySearchResult = () => {
+    const json = pokemon_info_data.get(search.value);
+    const cardContainer = document.getElementById("card-container");
+    cardContainer.innerHTML = "";
+
+    const template = document.querySelector("#pokemon-card").content.cloneNode(true);
+    const id = json.id;
+    const id_template = id >= 100 ? "#" : id >= 10 ? "#0" : "#00";
+
+    const id_container = template.querySelector("span");
+    id_container.textContent = id_template + id;
+
+    const img_container = template.querySelector("img");
+    img_container.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+    img_container.alt = json.name;
+
+    const name_container = template.querySelector("h2");
+    name_container.textContent = json.name;
+
+    cardContainer.appendChild(template);
+};
+
+// displays the pokemon for each page
+const displayPokemons = () => {
+    const json = { ...pokedata.get(curr_page) };
+    const results = json.results;
+    const cardContainer = document.getElementById("card-container");
+    cardContainer.innerHTML = "";
+
+    if (name_active) {
+        results.sort((a, b) => {
+            if (a.name > b.name) {
+                return 1;
+            }
+
+            if (a.name < b.name) {
+                return -1;
+            }
+
+            return 0;
+        });
+    }
+
+    if (reverse_active) {
+        results.reverse();
+    }
+
+    results.map((item) => {
+        const template = document.querySelector("#pokemon-card").content.cloneNode(true);
+        const id = item.url.substring(34, item.url.length - 1);
+        const id_template = id >= 100 ? "#" : id >= 10 ? "#0" : "#00";
+
+        const id_container = template.querySelector("span");
+        id_container.textContent = id_template + id;
+
+        const img_container = template.querySelector("img");
+        img_container.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+        img_container.alt = item.name;
+
+        const name_container = template.querySelector("h2");
+        name_container.textContent = item.name;
+
+        cardContainer.appendChild(template);
+    });
+};
+
 //// Event Listeners ////
 
 // on mount fetch the first page of pokemon
@@ -130,132 +259,3 @@ search.addEventListener("keydown", async (event) => {
 });
 
 //// Event Listeners ////
-
-// string template for search endpoint
-function getSearchEndpoint() {
-    return `https://pokeapi.co/api/v2/pokemon/${search.value}/`;
-}
-
-// string template for fetching pokemons by pages
-function getEndpoint() {
-    if (reverse_active && id_active) {
-        return `https://pokeapi.co/api/v2/pokemon?limit=${no_pokemons}&offset=${
-            max_page * no_pokemons - curr_page * no_pokemons
-        }`;
-    }
-
-    return `https://pokeapi.co/api/v2/pokemon?limit=${no_pokemons}&offset=${
-        curr_page * no_pokemons - no_pokemons
-    }`;
-}
-
-// string template for displaying the page info
-function getPageInfo() {
-    return `Page ${curr_page} of ${max_page}`;
-}
-
-// fetch pokemons by pages
-async function fetchPokemons() {
-    try {
-        if (pokedata.get(curr_page) !== undefined) {
-            return;
-        }
-
-        const response = await fetch(getEndpoint());
-        if (!response.ok) {
-            console.log("error fetching");
-            console.log(response.status);
-            return;
-        }
-
-        const json = await response.json();
-        max_page = Math.ceil(json.count / 18);
-        count = json.count;
-        pokedata.set(curr_page, json);
-    } catch (error) {
-        console.log(error.message);
-    }
-}
-
-// fetch pokemon from the search value, must be exact spelling in order to return result
-async function searchPokemon() {
-    try {
-        const response = await fetch(getSearchEndpoint());
-        if (!response.ok) {
-            console.log("error fetching");
-            console.log(response.status);
-        }
-
-        const json = await response.json();
-        pokemon_info_data.set(search.value, json);
-    } catch (error) {
-        console.log(error.message);
-    }
-}
-
-// displays the search result
-function displaySearchResult() {
-    const json = pokemon_info_data.get(search.value);
-    const cardContainer = document.getElementById("card-container");
-    cardContainer.innerHTML = "";
-
-    const template = document.querySelector("#pokemon-card").content.cloneNode(true);
-    const id = json.id;
-    const id_template = id >= 100 ? "#" : id >= 10 ? "#0" : "#00";
-
-    const id_container = template.querySelector("span");
-    id_container.textContent = id_template + id;
-
-    const img_container = template.querySelector("img");
-    img_container.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
-    img_container.alt = json.name;
-
-    const name_container = template.querySelector("h2");
-    name_container.textContent = json.name;
-
-    cardContainer.appendChild(template);
-}
-
-// displays the pokemon for each page
-function displayPokemons() {
-    const json = {...pokedata.get(curr_page)};
-    const results = json.results;
-    const cardContainer = document.getElementById("card-container");
-    cardContainer.innerHTML = "";
-
-    if (name_active) {
-        results.sort((a, b) => {
-            if (a.name > b.name) {
-                return 1;
-            }
-
-            if (a.name < b.name) {
-                return -1;
-            }
-            
-            return 0;
-        });
-    }
-
-    if (reverse_active) {
-        results.reverse();
-    }
-
-    results.map((item) => {
-        const template = document.querySelector("#pokemon-card").content.cloneNode(true);
-        const id = item.url.substring(34, item.url.length - 1);
-        const id_template = id >= 100 ? "#" : id >= 10 ? "#0" : "#00";
-
-        const id_container = template.querySelector("span");
-        id_container.textContent = id_template + id;
-
-        const img_container = template.querySelector("img");
-        img_container.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
-        img_container.alt = item.name;
-
-        const name_container = template.querySelector("h2");
-        name_container.textContent = item.name;
-
-        cardContainer.appendChild(template);
-    });
-}
