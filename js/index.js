@@ -14,7 +14,6 @@ let count = -1;
 let id_active = true;
 let name_active = false;
 let reverse_active = false;
-let reverse_active2 = false;
 
 // search
 const search = document.getElementById("search");
@@ -102,7 +101,6 @@ name_button.addEventListener("click", async () => {
 // reverses the result
 reverse_button.addEventListener("click", async () => {
     reverse_active = reverse_active ? false : true;
-    reverse_active2 = true;
     reverse_button.className = reverse_active ? button_active : button_inactive;
 
     if (id_active) {
@@ -241,12 +239,6 @@ function displayPokemons() {
 
     if (reverse_active) {
         results.reverse();
-    }
-
-    if (reverse_active2 && reverse_active === false) {
-        results.reverse();
-        results.reverse();
-        reverse_active2 = false;
     }
 
     results.map((item) => {
