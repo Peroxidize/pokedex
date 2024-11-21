@@ -1,0 +1,9 @@
+{
+    "devDependencies": {
+        "tailwindcss": "^3.4.15"
+    },
+    "scripts": {
+        "build": "tailwindcss build ./css/styles.css -o ./dist/styles.css",
+        "watch": "tailwindcss build ./css/styles.css -o ./dist/styles.css --watch"
+    }
+}
